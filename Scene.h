@@ -10,6 +10,7 @@ public:
     ~Scene();
     void fillWithRandom();
     Collision nextCollisionTime() const;
+    void collideAndUpdate(Collision colli);
     Particle& getParticleAt(int index) const;
 
 private:

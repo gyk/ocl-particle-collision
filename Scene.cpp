@@ -3,6 +3,8 @@
 #include <cmath>
 #include <cassert>
 #include <limits>
+#include <utility>
+#include <stdexcept>
 
 #include "config.h"
 #include "Particle.h"
@@ -102,6 +104,58 @@ Collision Scene::nextCollisionTime() const
     }
 
     return earliest;
+}
+
+void Scene::collideAndUpdate(Collision colli)
+{
+    float t = colli.occurTime;
+    for (int i=0; i<nParticles; i++) {
+        Particle& p = particles[i];
+        p.position[0] += p.velocity[0] * t;
+        p.position[1] += p.velocity[1] * t;
+    }
+
+    int obj1 = colli.object1, obj2 = colli.object2;
+    if (CollisionObject::againstWall(obj1)) {
+        // obj2 should be the one at rest
+        std::swap(obj1, obj2);
+    }
+
+    if (CollisionObject::againstWall(obj2)) {
+        switch (obj2) {
+            case CollisionObject::L_Wall:
+            case CollisionObject::R_Wall:
+                particles[obj1].velocity[0] = -particles[obj1].velocity[0];
+                break;
+            case CollisionObject::U_Wall:
+            case CollisionObject::D_Wall:
+                particles[obj1].velocity[1] = -particles[obj1].velocity[1];
+                break;
+            default:
+                throw std::runtime_error("Unknown collision object");
+        }
+    } else {
+        // two particles collide together
+        Particle& p1 = particles[obj1];
+        Particle& p2 = particles[obj2];
+        float vx = p1.velocity[0] - p2.velocity[0];
+        float vy = p1.velocity[1] - p2.velocity[1];
+
+        // since positions have been updated
+        float px = p1.position[0] - p2.position[0];
+        float py = p1.position[1] - p2.position[1];
+        float pdInv = 1.f / std::hypot(px, py);
+        px *= pdInv, py *= pdInv;
+
+        float vVertMag = -vx * px - vy * py;
+        float impulse = 2.f * p1.mass * p2.mass * vVertMag / (p1.mass + p2.mass);
+        float v1VertMag = impulse / p1.mass;
+        float v2VertMag = impulse / p2.mass;
+        p1.velocity[0] -= v1VertMag * px;
+        p1.velocity[1] -= v1VertMag * py;
+        p2.velocity[0] -= v2VertMag * px;
+        p2.velocity[1] -= v2VertMag * py;
+    }
 }
 
 Particle& Scene::getParticleAt(int index) const

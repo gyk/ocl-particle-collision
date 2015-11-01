@@ -1,7 +1,7 @@
 #pragma once
 #include <limits>
 
-namespace CollisionObject
+struct CollisionObject
 {
     enum
     {
@@ -11,6 +11,11 @@ namespace CollisionObject
         U_Wall = -8,
         D_Wall = -16,
     };
+
+    static bool againstWall(int co)
+    {
+        return co < 0;
+    }
 };
 
 struct Collision
