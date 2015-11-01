@@ -1,4 +1,5 @@
 /* Configuration */
+#pragma once
 
 const int N_PARTICLES = 20;
 const float SIZE_X = 15.f;
