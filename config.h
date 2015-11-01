@@ -8,5 +8,5 @@ const float RADIUS = 1.f;
 
 const float MIN_MASS = 1.f;
 const float MAX_MASS = 3.f;
-const float MIN_VEL = 1.f;
+const float MIN_VEL = -10.f;
 const float MAX_VEL = 10.f;
