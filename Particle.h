@@ -3,7 +3,7 @@
 
 struct Particle
 {
-    Particle() : mass(mass), position({ 0.f, 0.f }), velocity({ 0.f, 0.f }) {}
+    Particle() = default;
     Particle(double mass, double position[2], double velocity[2])
         : mass(mass)  
     {
