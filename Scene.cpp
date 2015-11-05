@@ -82,11 +82,11 @@ Collision Scene::nextCollisionTime() const
                 continue;
             }
 
-            // distance from collision point to perpendicular foot, squared
-            float c2f2 = 4.f * RADIUS * RADIUS - (px * px + py * py - l * l);
-            if (c2f2 < 0) continue;
+            // distance from p1's center to perpendicular foot, squared
+            float p1c2f2 = 4.f * RADIUS * RADIUS - (px * px + py * py - l * l);
+            if (p1c2f2 < 0) continue;
 
-            float d = l - std::sqrt(c2f2);
+            float d = l - std::sqrt(p1c2f2);
             if (d < 0) continue;
 
             float t = d / vmag;
