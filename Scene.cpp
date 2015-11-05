@@ -13,13 +13,8 @@
 
 Scene::Scene(float sizeX, float sizeY, int nParticles)
     : sizeX(sizeX), sizeY(sizeY), nParticles(nParticles)
+    , particles(nParticles, Particle())
 {
-    particles = new Particle[nParticles];
-}
-
-Scene::~Scene()
-{
-    delete[] particles;
 }
 
 void Scene::fillWithRandom()
@@ -45,7 +40,7 @@ Collision Scene::nextCollisionTime() const
     Collision earliest;
 
     for (int i=0; i<nParticles; i++) {
-        Particle& p1 = particles[i];
+        const Particle& p1 = particles[i];
         // colliding with walls?
         float _px = p1.position[0];
         float _py = p1.position[1];
@@ -74,7 +69,7 @@ Collision Scene::nextCollisionTime() const
         }
 
         for (int j=i+1; j<nParticles; j++) {
-            Particle& p2 = particles[j];
+            const Particle& p2 = particles[j];
             float px = p1.position[0] - p2.position[0];
             float py = p1.position[1] - p2.position[1];
             float vx = p1.velocity[0] - p2.velocity[0];
@@ -158,7 +153,12 @@ void Scene::collideAndUpdate(Collision colli)
     }
 }
 
-Particle& Scene::getParticleAt(int index) const
+Particle& Scene::getParticleAt(int index)
 {
-    return particles[index];
+    return particles.at(index);
+}
+
+const Particle& Scene::getParticleAt(int index) const
+{
+    return particles.at(index);
 }
