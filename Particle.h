@@ -12,6 +12,7 @@ struct Particle
     }
     Particle(const Particle&) = default;
     Particle& operator=(const Particle&) = default;
+    float kineticEnergy() const;
 
     float mass;
     float position[2];
