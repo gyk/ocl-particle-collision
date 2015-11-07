@@ -133,6 +133,13 @@ void Scene::collideAndUpdate(Collision colli)
         // two particles collide together
         Particle& p1 = particles[obj1];
         Particle& p2 = particles[obj2];
+
+        #ifdef DEBUG
+        float oldKineticEnergy = p1.kineticEnergy() + p2.kineticEnergy();
+        float oldMomentumX = p1.mass * p1.velocity[0] + p2.mass * p2.velocity[0];
+        float oldMomentumY = p1.mass * p1.velocity[1] + p2.mass * p2.velocity[1];
+        #endif
+
         float vx = p1.velocity[0] - p2.velocity[0];
         float vy = p1.velocity[1] - p2.velocity[1];
 
@@ -143,13 +150,20 @@ void Scene::collideAndUpdate(Collision colli)
         px *= pdInv, py *= pdInv;
 
         float vVertMag = -vx * px - vy * py;
+        assert(vVertMag > 0);
         float impulse = 2.f * p1.mass * p2.mass * vVertMag / (p1.mass + p2.mass);
         float v1VertMag = impulse / p1.mass;
         float v2VertMag = impulse / p2.mass;
-        p1.velocity[0] -= v1VertMag * px;
-        p1.velocity[1] -= v1VertMag * py;
+        p1.velocity[0] += v1VertMag * px;
+        p1.velocity[1] += v1VertMag * py;
         p2.velocity[0] -= v2VertMag * px;
         p2.velocity[1] -= v2VertMag * py;
+
+        #ifdef DEBUG
+        assert(std::abs(p1.kineticEnergy() + p2.kineticEnergy() - oldKineticEnergy) < 1e-6);
+        assert(std::abs(p1.mass * p1.velocity[0] + p2.mass * p2.velocity[0] - oldMomentumX)) < 1e-6);
+        assert(std::abs(p1.mass * p1.velocity[1] + p2.mass * p2.velocity[1] - oldMomentumY)) < 1e-6);
+        #endif
     }
 }
 
