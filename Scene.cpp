@@ -1,14 +1,16 @@
+#include "Scene.h"
+
 #include <cstdlib>
 #include <ctime>
 #include <cmath>
 #include <cassert>
+
 #include <limits>
 #include <utility>
 #include <stdexcept>
 
 #include "config.h"
 #include "Particle.h"
-#include "Scene.h"
 #include "Collision.h"
 
 Scene::Scene(float sizeX, float sizeY, int nParticles)
